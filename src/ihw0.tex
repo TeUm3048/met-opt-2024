@@ -1,0 +1,334 @@
+\problemset{Методы оптимизации}
+% \problemset{Индивидуальное домашнее задание №4}	% поменяйте номер ИДЗ
+
+\renewcommand*{\proofname}{Доказательство}
+
+Прим. во всех задачах используется обозначение $\grad{f(\vb x)}$ — градиент функции $f(\vb x)$,
+и $\dprod{\vb x}{\vb y}$ — скалярное произведение $\vb x$ и $\vb y$.
+
+\begin{problem}
+Зная формулу Ньютона-Лейбница:
+
+\[
+    \int_{a}^{b} f(x) \, dx = F(b) - F(a)
+\]
+
+где $F(x)$ - первообразная функции $f(x)$, непрерывной на отрезке $[a, b]$.
+
+Доказать, что:
+
+\[
+    g(\vb{x} + \vb{y}) = g(\vb{x}) + \int_{0}^{1} \dprod{ \nabla g(\vb{x} + t \vb{y}) }{\vb{y} }\, dt
+\]
+\end{problem}
+
+
+\begin{proof}
+    Рассмотрим функцию $g(\vb{x} + t \vb{y})$ зависящую от параметра $t$.
+    \begin{itemize}
+        \item Продифференцируем её по $t$ по правилу дифференцирования сложной функции (chain rule):
+              \[
+                  \dv{t}(g(\vb{x} + t \vb{y})) = \dprod{ \grad{ g(\vb{x} + t \vb{y})} }{\vb{y}}
+              \]
+
+        \item Проинтегрируем обе части уравнения по $t$ от $0$ до $1$:
+              \[
+                  \int_{0}^{1} \dv{t} (g(\vb{x} + t \vb{y})) \, dt
+                  = \int_{0}^{1} \dprod{ \grad {g(\vb{x} + t \vb{y}) }}{\vb{y}} \, dt
+              \]
+        \item По формуле Ньютона-Лейбница левая часть равна:
+              \[
+                  \int_{0}^{1} \dv{t} (g(\vb{x} + t \vb{y})) \, dt
+                  = g(\vb{x} + \vb{y}) - g(\vb{x})
+              \]
+        \item Получаем:
+              \[
+                  g(\vb{x} + \vb{y}) - g(\vb{x})
+                  = \int_{0}^{1} \dprod{\grad{g(\vb{x} + t \vb{y})}}  {\vb{y}} \, dt
+              \]
+        \item Переносим $g(\vb{x})$ в правую часть:
+              \[
+                  g(\vb{x} + \vb{y})
+                  = g(\vb{x}) + \int_{0}^{1} \dprod{\grad{g(\vb{x} + t \vb{y})} } {\vb{y}} \, dt
+              \]
+
+    \end{itemize}
+\end{proof}
+
+\begin{problem}
+Для метода наискорейшего спуска доказать, что:
+\[
+    \dv{t}(f(\vb{x} - t \grad{f(\vb{x})}))|_{t=t_k}
+    = \dprod{\grad{f(\vb{x}_{k+1})} }{\grad{f(\vb{x}_k)}}
+\]
+\end{problem}
+
+\begin{proof}
+
+    Метод наискорейшего спуска заключается в минимизации функции $f\left(\vb{x}\right)$ по направлению антиградиента. Точка минимума функции $f\left(\vb{x}\right)$ находится по формуле:
+    \[
+        \vb{x}_{k+1} = \vb{x}_k - \alpha_k \grad{f\left(\vb{x}_k\right)}
+    \]
+    где $\alpha_k$ — шаг метода вдоль антиградиента и $\grad{f\left(\vb{x}_k\right)}$ — градиент функции $f$ в точке $\vb{x}_k$.
+
+    \begin{itemize}
+        \item Введем функцию
+              \[
+                  \vb{x}\left(t\right) = \vb{x}_k - t \grad{f\left(\vb{x}_k\right)}
+              \]
+              как некоторую кривую, проходящую через точку $\vb{x}_k$
+              в направлении антиградиента на шаг $t$.
+        \item Далее найдем производную функции $f\left(\vb{x}\left(t\right)\right)$ по $t$, используя правило дифференцирования сложной функции (chain rule):
+              \[
+                  \dv{t} f\left(\vb{x}\left(t\right)\right) = \dprod{\grad{f\left(\vb{x}\left(t\right)\right)}}{\dv{t} \vb{x}\left(t\right)}
+              \]
+        \item Так как $\dv{t}\left(\vb{x}\left(t\right)\right) = -\grad{f \left(\vb{x}_k\right)}$,
+              то производная функции $f\left(\vb{x}\left(t\right)\right)$ по $t$ равна:
+              \[
+                  \dv{t} f\left(\vb{x}\left(t\right)\right) = -\dprod{\grad{f\left(\vb{x}\left(t\right)\right)}}{\grad{f\left(\vb{x}_k\right)}}
+              \]
+        \item Подставим $t= t_k$:
+              \[
+                  \eval{\dv{t} f\left(\vb{x}_k - t \grad{f\left(\vb{x}_k\right)}\right)}_{t=t_k}
+                  = -\dprod{\grad{f\left(\vb{x}_{k+1}\right)}}{\grad{f\left(\vb{x}_k\right)}}
+              \]
+
+    \end{itemize}
+    Таким образом, доказано, что производная функции $f\left(\vb{x}\left(t\right)\right)$ по $t$ в точке $t_k$ равна скалярному произведению градиентов функции $f$ в точках $\vb{x}_{k+1}$ и $\vb{x}_k$.
+\end{proof}
+
+\begin{problem}
+Пусть $f(\vb{x}) = 0.5 \vb{x}\transpose A \vb{x} + \dprod{\vb{b}}{\vb{x}}$ — квадратичная функция.
+
+Доказать, что для метода наискорейшего спуска справедливо соотношение
+
+\[
+    t_k = \frac{\norm{\grad {f(x_k)}}}{\dprod{\grad{f(x_k)}}{ A \grad{ f(x_k)}}}
+\]
+\end{problem}
+
+\begin{proof}
+    \
+    \begin{itemize}
+        \item Градиент функции $f(\vb{x})$ равен:
+              \[
+                  \grad{f(\vb{x})} = A\vb{x} + \vb{b}
+              \]
+        \item На каждом шаге метода наискорейшего спуска выбирается такой шаг $t_k$, чтобы минимизировать функцию $f(\vb{x}_{k+1})$:
+              \[
+                  \vb{x}_{k+1} = \vb{x}_k - t_k \grad{f(\vb{x}_k)}
+              \]
+              Найдем такое $t_k$, при котором функция $f(\vb{x}_{k+1})$ минимальна:
+              \[
+                  \argmin_{t_k} f(\vb{x}_{k+1})
+                  = \argmin_{t_k} f(\vb{x}_k - t_k \grad{f(\vb{x}_k)})
+              \]
+        \item Подставим $\vb{x}_{k+1}$ в функцию $f(\vb{x})$:
+              \[
+                  \begin{aligned}
+                      f(\vb{x}_{k+1})
+                       & = 0.5 (\vb{x}_k - t_k \grad{f(\vb{x}_k)})\transpose A (\vb{x}_k - t_k \grad{f(\vb{x}_k)})
+                      + \vb{b}\transpose(\vb{x}_k - t_k \grad{f(\vb{x}_k)})                                        \\
+                       & = 0.5 \vb{x}_k\transpose A \vb{x}_k
+                      - t_k \grad{f(\vb{x}_k)}\transpose A \vb{x}_k
+                      + 0.5 t_k^2 \grad{f(\vb{x}_k)}\transpose A \grad{f(\vb{x}_k)}
+                      + \vb{b}\transpose \vb{x}_k
+                      - t_k \vb{b}\transpose \grad{f(\vb{x}_k)}
+                  \end{aligned}
+              \]
+        \item Найдем производную функции $f(x_{k+1})$ по $t_k$:
+              \[
+                  \dv{t_k} f(x_{k+1})
+                  = - \grad{f(\vb{x}_k)}\transpose A \vb{x}_k
+                  + t_k \grad{f(\vb{x}_k)}\transpose A \grad{f(\vb{x}_k)}
+                  - \vb{b}\transpose \grad{f(\vb{x}_k)}
+              \]
+        \item Сгруппируем слагаемые:
+              \[
+                  \dv{t_k} f(x_{k+1})
+                  = t_k \grad{f(\vb{x}_k)}\transpose A \grad{f(\vb{x}_k)}
+                  - \left(\grad{f(\vb{x}_k)}\transpose A \vb{x}_k
+                  + \vb{b}\transpose \grad{f(\vb{x}_k)}\right)
+              \]
+        \item Воспользуемся тем, что $\vb{b}\transpose \grad{f(\vb{x}_k)} = \grad{f(\vb{x}_k)}\transpose \vb{b}$:
+              \[
+                  \begin{aligned}
+                      \dv{t_k} f(x_{k+1})
+                       & =  t_k \grad{f(\vb{x}_k)}\transpose A \grad{f(\vb{x}_k)}
+                      - \left(\grad{f(\vb{x}_k)}\transpose A \vb{x}_k
+                      + \grad{f(\vb{x}_k)}\transpose \vb{b}\right)
+                      \\
+                       & =  t_k \grad{f(\vb{x}_k)}\transpose A \grad{f(\vb{x}_k)}
+                      - \grad{f(\vb{x}_k)}\transpose\left( A \vb{x}_k
+                      +  \vb{b}\right)
+                      \\
+                  \end{aligned}
+              \]
+        \item Подставим вместо $A\vb{x}_k + \vb{b}$ градиент функции $f(\vb{x}_k)$:
+              \[
+                  \dv{t_k} f(x_{k+1})
+                  = t_k \grad{f(\vb{x}_k)}\transpose A \grad{f(\vb{x}_k)}
+                  - \grad{f(\vb{x}_k)}\transpose \grad{f(\vb{x}_k)}
+              \]
+        \item Воспользуемся услоивем оптимальности шага $t_k$:
+              \[
+                  \dv{t_k} f(x_{k+1}) = 0
+              \]
+              Получаем:
+              \[
+                  t_k \grad{f(\vb{x}_k)}\transpose A \grad{f(\vb{x}_k)}
+                  = \grad{f(\vb{x}_k)}\transpose \grad{f(\vb{x}_k)}
+              \]
+        \item Откуда получаем формулу для шага $t_k$:
+              \[
+                  t_k
+                  = \frac{\grad{f(\vb{x}_k)}\transpose \grad{f(\vb{x}_k)}}{\grad{f(\vb{x}_k)}\transpose A \grad{f(\vb{x}_k)}}
+                  = \frac{\norm{\grad{f(\vb{x}_k)}}^2}{\dprod{\grad{f(\vb{x}_k)}}{A \grad{f(\vb{x}_k)} }}
+              \]
+    \end{itemize}
+    Итого, доказано, что для метода наискорейшего спуска справедливо соотношение
+    \[
+        t_k = \frac{\norm{\grad {f(x_k)}}}{\dprod{\grad{f(x_k)}}{ A \grad{ f(x_k)} }}
+    \]
+\end{proof}
+
+\renewcommand*{\proofname}{Решение}
+
+
+\begin{problem}
+Найти минимум функции $f(x_1, x_2) = x_1 x_2$ при ограничениях $x_1^2 + x_2^2 \le 1$,
+используя теорему Каруша-Джона.
+\end{problem}
+
+\begin{proof}
+    \
+    \begin{itemize}
+        \item Запишем функцию Лагранжа:
+              \[
+                  L(x_1, x_2, \lambda) = x_1 x_2 + \lambda (x_1^2 + x_2^2 - 1)
+              \]
+        \item Найдем градиент функции Лагранжа:
+              \[
+                  \grad{L} = \begin{pmatrix}
+                      x_2 + 2 \lambda x_1 \\
+                      x_1 + 2 \lambda x_2 \\
+                      x_1^2 + x_2^2 - 1
+                  \end{pmatrix}
+              \]
+        \item По условию оптимальности из теоремы Каруша-Джона градиент функции Лагранжа равен нулю:
+              \[
+                  \begin{cases}
+                      x_2 + 2 \lambda x_1 = 0 \\
+                      x_1 + 2 \lambda x_2 = 0 \\
+                      x_1^2 + x_2^2 - 1 = 0
+                  \end{cases}
+              \]
+        \item Решим систему уравнений:
+              \[
+                  \begin{cases}
+                      x_2 + 2 \lambda x_1 = 0 \\
+                      x_1 + 2 \lambda x_2 = 0 \\
+                      x_1^2 + x_2^2 - 1 = 0
+                  \end{cases}
+              \]
+              Получаем:
+              \[
+                  \begin{cases}
+                      x_2 + 2 \lambda x_1 = 0 \\
+                      x_1 + 2 \lambda x_2 = 0 \\
+                      x_1^2 + x_2^2 - 1 = 0
+                  \end{cases}
+                  \Rightarrow
+                  \left[
+                  \begin{array}{ll}
+                      \begin{cases}
+                          \lambda = -\frac{1}{2} \\
+                          x_1 = x_2 = \pm \frac{1}{\sqrt{2}}
+                      \end{cases}
+                      \\
+                      \\
+                      \begin{cases}
+                          \lambda = \frac{1}{2} \\
+                          x_1 = -x_2 = \pm \frac{1}{\sqrt{2}}
+                      \end{cases}
+                  \end{array}
+                  \right.
+              \]
+        \item Подставим найденные значения $x_1$ и $x_2$ в функцию $f(x_1, x_2) = x_1 x_2$:
+              \[
+                  f\left(\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}}\right) = \frac{1}{2}
+              \]
+              \[
+                  f\left(\frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}}\right) = -\frac{1}{2}
+              \]
+              \[
+                  f\left(-\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}}\right) = -\frac{1}{2}
+              \]
+              \[
+                  f\left(-\frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}}\right) = \frac{1}{2}
+              \]
+    \end{itemize}
+    Таким образом, минимум функции $f(x_1, x_2) = x_1 x_2$ при ограничениях $x_1^2 + x_2^2 \le 1$ равен $-\frac{1}{2}$
+    и достигается в точках $x_1 = - x_2 = \pm \frac{1}{\sqrt{2}}$.
+\end{proof}
+
+\begin{problem}
+Пусть $f(y, y')$ не зависит от $x$.
+
+Чему равно значение $\dv{x}(f - f_{y'}y')$?
+\end{problem}
+
+\begin{proof}
+    Введем обозначение $f = f(y, y')$, $f_{y} = \dv{y} f$, $f_{y'} = \dv{y'} f$.
+
+    \begin{itemize}
+        \item Продифференцируем $f - f_{y'}y'$ по $x$:
+              \[
+                  \dv{x}(f - f_{y'}y')
+                  = \dv{x} f - \dv{x} (f_{y'}y')
+              \]
+        \item Так как $f$ не зависит от $x$, то $\dv{x} f = 0$:
+              \[
+                  \dv{x}(f - f_{y'}y') = - \dv{x} (f_{y'}y')
+              \]
+        \item Применим правило дифференцирования произведения:
+              \[
+                  \dv{x} (f_{y'}y') = -f_{y'} \dv{x} (y') - \dv{x} (f_{y'}) y'
+              \]
+        \item Так как $f$ не зависит от $x$, то $\dv{x} (f_{y'}) = 0$:
+              \[
+                  \dv{x} (f_{y'}y') = -f_{y'} \dv{x} (y') = -f_{y'} y''
+              \]
+    \end{itemize}
+    Итого, значение $\dv{x}(f - f_{y'}y')$ равно $-f_{y'} y''$.
+\end{proof}
+
+\begin{problem}
+Составить уравнение Эйлера-Лагранжа для $F = x^2 y + y'^2 x$.
+\end{problem}
+
+\begin{proof}
+    Формула Эйлера-Лагранжа имеет вид:
+    \[
+        \dv{x} ( \pdv{F}{y'} ) - \pdv{F}{y} = 0
+    \]
+    \begin{itemize}
+        \item Найдем частную производную $F$ по $y'$:
+              \[
+                  \pdv{F}{y'} = 2 x y'
+              \]
+        \item Найдем производную $\pdv{F}{y'}$ по $x$:
+              \[
+                  \dv{x} ( \pdv{F}{y'} ) = 2 y' + 2 x y''
+              \]
+        \item Найдем частную производную $F$ по $y$:
+              \[
+                  \pdv{F}{y} = x^2
+              \]
+        \item Подставим найденные значения в уравнение Эйлера-Лагранжа:
+              \[
+                  2 y' + 2 x y'' - x^2 = 0
+              \]
+    \end{itemize}
+    Таким образом, уравнение Эйлера-Лагранжа для $F = x^2 y + y'^2 x$ имеет вид $2 y' + 2 x y'' - x^2 = 0$.
+\end{proof}

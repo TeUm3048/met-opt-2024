@@ -1,0 +1,26 @@
+{
+  "latex-workshop.latex.tools": [
+    {
+      "name": "pdflatex",
+      "command": "pdflatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "pythontex",
+      "command": "pythontex",
+      "args": ["%DOC%", "--interpreter=python:%WORKSPACE_FOLDER%/.venv/bin/python", "--verbose"]
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "compile with pythontex enabled",
+      "tools": ["pdflatex" , "pythontex", "pdflatex"]
+    }
+  ],
+}
